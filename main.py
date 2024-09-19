@@ -13,6 +13,10 @@ genres = [
 ]
 
 def random_publish_date(birth_date):
+    """
+    Generates a random book publishing date for an author, 
+    ensuring that the date is at least 10 years after their birth date.
+    """
     birth_date = datetime.strptime(str(birth_date), '%Y-%m-%d')
     birth_date = birth_date + timedelta(days=10 * 365)
     end_date = datetime.today()
@@ -67,7 +71,7 @@ conn.commit()
 
 #იპოვეთ და დაბეჭდეთ ყველაზე მეტი გვერდების მქონე წიგნის ყველა ველი
 
-cursor.execute("SELECT * FROM book WHERE pages = (SELECT MAX(pages) FROM book)")
+cursor.execute("SELECT * FROM book WHERE pages = (SELECT MAX(pages) FROM book) LIMIT 1")
 book_with_max_pages = cursor.fetchall()
 for book in book_with_max_pages:
     print(f"Here is all the information about book with maximum number of pages:\n\
@@ -88,7 +92,7 @@ for i in book_avg_pages:
 
 #დაბეჭდეთ ყველაზე ახალგაზრდა ავტორი
 
-cursor.execute("SELECT first_name, last_name, birth_date FROM author WHERE birth_date = (SELECT MIN(birth_date) FROM author)")
+cursor.execute("SELECT first_name, last_name, birth_date FROM author WHERE birth_date = (SELECT MAX(birth_date) FROM author)")
 youngest_author = cursor.fetchall()
 for author in youngest_author:
     print(f"The youngest author is {author[0]} {author[1]} who was born in {author[2]}.")
